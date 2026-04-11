@@ -76,7 +76,7 @@ async def get_observations(
         category = res.get("category", [{}])[0].get("coding", [{}])[0].get("code", "N/A")
 
         for obs in _extract_observation_values(res):
-            value_str = f"{obs['value']} {obs['unit']}".strip() if obs["value"] is not None else "N/A"
+            value_str = " ".join(filter(None, [str(obs["value"]), obs["unit"]])) if obs["value"] is not None else "N/A"
             lines.append(
                 f"- {obs['name']}: {value_str} | Date: {effective} | Category: {category} | Status: {status}"
             )
