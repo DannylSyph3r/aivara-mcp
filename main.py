@@ -1,17 +1,17 @@
 import logging
 import os
+import sys
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
 
-# load_dotenv and logging must be configured before any local imports,
-# since module-level loggers are created at import time.
 load_dotenv()
 
 _log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
     level=getattr(logging, _log_level, logging.INFO),
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
+    stream=sys.stdout,
 )
 
 logger = logging.getLogger(__name__)
