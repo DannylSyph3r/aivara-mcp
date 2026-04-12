@@ -16,10 +16,13 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-from fastapi import FastAPI  # noqa: E402
-from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from mcp_instance import mcp  # noqa: E402
+from mcp_instance import mcp
+
+_AIVARA_API_KEY = os.getenv("AIVARA_API_KEY")
 
 
 @asynccontextmanager
@@ -38,5 +41,37 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def api_key_middleware(request: Request, call_next):
+    api_key = request.headers.get("X-Aivara-Key")
+
+    if not api_key:
+        logger.warning(
+            "security_rejected_missing_key path=%s method=%s",
+            request.url.path, request.method,
+        )
+        return JSONResponse(
+            status_code=401,
+            content={"error": "Unauthorized", "detail": "X-Aivara-Key header is required"},
+        )
+
+    if api_key != _AIVARA_API_KEY:
+        logger.warning(
+            "security_rejected_invalid_key path=%s method=%s key_prefix=%s",
+            request.url.path, request.method, api_key[:6],
+        )
+        return JSONResponse(
+            status_code=403,
+            content={"error": "Forbidden", "detail": "Invalid API key"},
+        )
+
+    logger.info(
+        "security_authorized path=%s method=%s",
+        request.url.path, request.method,
+    )
+    return await call_next(request)
+
 
 app.mount("/", mcp.streamable_http_app())
