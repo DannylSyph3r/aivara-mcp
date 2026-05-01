@@ -13,6 +13,7 @@ from tools.get_patient import get_patient
 from tools.get_procedures import get_procedures
 from tools.list_patients import list_patients
 from tools.search_patients import search_patients
+from tools.get_workspace_risk_summary import get_workspace_risk_summary
 
 logger = logging.getLogger(__name__)
 
@@ -88,3 +89,15 @@ mcp.tool(
     name="GetProcedures",
     description="Gets procedures performed for a patient including procedure name, status, date, and the condition that triggered it.",
 )(get_procedures)
+
+mcp.tool(
+    name="GetWorkspaceRiskSummary",
+    description=(
+        "Returns all patients in the workspace ranked by DALY score (highest disease burden first). "
+        "Includes patient name, date of birth, gender, DALY, QALY, and patient ID for each entry. "
+        "Always includes ranking basis explanation and explicit limitations caveat. "
+        "Use for workspace-level triage queries only — invoke without a patient selected in the launchpad. "
+        "Does not capture psychosocial risk, behavioural health history, safeguarding concerns, "
+        "or paediatric growth status."
+    ),
+)(get_workspace_risk_summary)
