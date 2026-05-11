@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def _extract_observation_values(resource: dict) -> list[dict]:
-    """Normalise the three FHIR observation value shapes into a flat list."""
+    # Normalises component, valueQuantity, and valueCodeableConcept into a flat list.
     if resource.get("component"):
         return [
             {

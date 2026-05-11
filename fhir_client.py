@@ -4,7 +4,6 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
-# Swap this value if timeout needs tuning — single place, no grep required.
 FHIR_REQUEST_TIMEOUT = 30.0
 
 

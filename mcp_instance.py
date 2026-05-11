@@ -19,10 +19,7 @@ logger = logging.getLogger(__name__)
 
 mcp = FastMCP("Aivara MCP", stateless_http=True, host="0.0.0.0")
 
-# Capabilities patch — declares FHIR context support to PO during MCP handshake.
-# This causes PO to inject SHARP headers on every tool call.
-# Using Option A (community repo structure). If SHARP headers do not arrive
-# after registration, switch to Option B from the reference doc.
+# Patch capabilities to advertise FHIR context support — triggers SHARP header injection by PO.
 _original_get_capabilities = mcp._mcp_server.get_capabilities
 
 

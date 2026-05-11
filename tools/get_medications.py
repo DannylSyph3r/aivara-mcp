@@ -41,7 +41,6 @@ async def get_medications(
     for entry in entries:
         res = entry.get("resource", {})
 
-        # Drug name lives on a separate Medication resource — one extra fetch per entry.
         med_ref = res.get("medicationReference", {}).get("reference", "")
         med_id = med_ref.replace("Medication/", "") if med_ref else ""
         medication = await fhir_client.read(f"Medication/{med_id}") if med_id else None

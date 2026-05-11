@@ -15,13 +15,7 @@ _QALY_URL = "http://synthetichealth.github.io/synthea/quality-adjusted-life-year
 async def get_workspace_risk_summary(
     ctx: Context = None,
 ) -> str:
-    """
-    Returns all patients in the workspace ranked by DALY score, highest disease
-    burden first. Includes ranking basis and explicit limitations caveat.
-
-    Workspace-scoped — no patient ID required or accepted.
-    Invoke without a patient selected in the PO launchpad.
-    """
+    # Workspace-scoped — ranks all patients by DALY score with limitations caveat. No patient ID required.
     fhir_context = get_fhir_context(ctx)
     if not fhir_context:
         return create_text_response(
